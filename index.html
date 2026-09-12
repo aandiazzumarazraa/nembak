@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>ANUUUU //// -_- ////🌼</title>
+
+<!-- FONT KARTUN LUCU & CERIA -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   1. COLOR TOKENS (SOLID FLAT COLORS)
+========================================================= */
+:root{
+  --bg-pink:        #FFE3EC;
+  --bg-pattern:     #FFCCD9;
+  --white:          #FFFFFF;
+  
+  --gerbera-red:    #FF3355;
+  --gerbera-orange: #FF7A00;
+  --gerbera-pink:   #FF6584;
+  --gerbera-yellow: #FFD124;
+  
+  --stroke-dark:    #2B1B22;
+  --text-dark:      #2B1B22;
+  
+  --border-thick:   3px solid var(--stroke-dark);
+  --shadow-block:   0 5px 0 var(--stroke-dark);
+  --shadow-block-sm:0 3px 0 var(--stroke-dark);
+  
+  --radius-lg:      20px;
+  --radius-md:      14px;
+  
+  --font-heading:   'Fredoka', cursive, sans-serif;
+  --font-body:      'Nunito', sans-serif;
+  --bounce-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+*, *::before, *::after{ 
+  box-sizing: border-box; 
+  -webkit-tap-highlight-color: transparent;
+}
+html,body{ 
+  margin:0; padding:0; 
+  width:100%; height:100%;
+}
+
+body{
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: var(--font-body);
+  color: var(--text-dark);
+  background-color: var(--bg-pink);
+  background-image: radial-gradient(var(--bg-pattern) 20%, transparent 20%);
+  background-size: 20px 20px;
+  overflow-x: hidden;
+}
+
+h1,h2,h3{ font-family: var(--font-heading); margin:0; }
+p{ margin:0; }
+
+#app{ 
+  position:relative; 
+  width:100%; 
+  min-height:100vh; 
+  min-height:100dvh; 
+  z-index: 5; 
+}
+
+.page{
+  display:none;
+  min-height:100vh;
+  min-height:100dvh;
+  width:100%;
+  max-width: 500px;
+  margin: 0 auto;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  padding: calc(env(safe-area-inset-top) + 40px) 16px calc(env(safe-area-inset-bottom) + 24px);
+  opacity:0;
+  transform: scale(0.92) translateY(15px);
+  transition: opacity .4s var(--bounce-elastic), transform .4s var(--bounce-elastic);
+  position: relative;
+  z-index: 5;
+}
+.page.active{ display:flex; opacity:1; transform:scale(1) translateY(0); }
+.page.leaving{ opacity:0; transform:scale(0.88) translateY(-20px); }
+
+/* Progress Dots */
+.progress-dots{
+  position:fixed;
+  top: max(12px, env(safe-area-inset-top));
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:8px;
+  z-index:50;
+}
+.progress-dots span{
+  width:10px; height:10px; border-radius:50%;
+  background: var(--white);
+  border: 2px solid var(--stroke-dark);
+  transition: all .3s var(--bounce-elastic);
+}
+.progress-dots span.active{
+  background: var(--gerbera-red);
+  width:24px;
+  border-radius:10px;
+  box-shadow: var(--shadow-block-sm);
+}
+
+/* =========================================================
+   2. TOMBOL KARTUN SOLID & LOCK STATE
+========================================================= */
+.btn{
+  appearance:none;
+  border: var(--border-thick);
+  cursor:pointer;
+  font-family: var(--font-heading);
+  font-weight:700;
+  font-size: 1.05rem;
+  padding: 10px 24px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-block);
+  transition: transform .15s ease, box-shadow .15s ease, opacity .25s ease, background-color .2s ease;
+  user-select: none;
+  touch-action: manipulation;
+}
+.btn:active{
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 var(--stroke-dark);
+}
+.btn-primary{
+  background: var(--gerbera-orange);
+  color: var(--white);
+}
+.btn-ghost{
+  background: var(--white);
+  color: var(--gerbera-red);
+}
+
+/* Status tombol yang terkunci sebelum teks selesai discroll */
+.btn-locked{
+  background: #DDD0D5 !important;
+  color: #8C7B83 !important;
+  cursor: not-allowed !important;
+  box-shadow: var(--shadow-block-sm) !important;
+  transform: none !important;
+  pointer-events: auto;
+}
+
+.btn-hidden{ display: none !important; }
+.btn-shown{ display: inline-flex !important; }
+
+/* Stage Center */
+.stage-container{
+  display:grid;
+  width:100%;
+  justify-items:center;
+  align-items:center;
+  position: relative;
+  z-index: 6;
+}
+.stage-container > *{
+  grid-area: 1 / 1;
+  width:100%;
+}
+
+.hint-badge{
+  text-align:center;
+  margin-top:12px;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  background: var(--gerbera-yellow);
+  color: var(--text-dark);
+  border: var(--border-thick);
+  border-radius: 12px;
+  padding: 5px 12px;
+  box-shadow: var(--shadow-block-sm);
+  display:inline-block;
+  animation: cartoon-bounce 1.3s infinite alternate ease-in-out;
+}
+@keyframes cartoon-bounce{
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-5px); }
+}
+
+/* =========================================================
+   3. AREA SCROLL TULISAN PANJANG (RESPONSIF SEMUA LAYAR HP)
+========================================================= */
+.scrollable-content{
+  max-height: clamp(140px, 35vh, 260px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 6px;
+  margin: 8px 0 10px 0;
+  border-radius: 8px;
+}
+
+/* Custom Scrollbar Kartun */
+.scrollable-content::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollable-content::-webkit-scrollbar-track {
+  background: var(--bg-pink);
+  border-radius: 10px;
+}
+.scrollable-content::-webkit-scrollbar-thumb {
+  background: var(--gerbera-pink);
+  border-radius: 10px;
+  border: 1px solid var(--stroke-dark);
+}
+
+.scroll-notice{
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: var(--gerbera-orange);
+  text-align: center;
+  margin-bottom: 6px;
+  transition: opacity .3s ease;
+}
+
+/* =========================================================
+   4. HALAMAN 1 — AMPLOP KARTUN FLAT
+========================================================= */
+.envelope-scene{
+  position:relative;
+  width: clamp(230px, 70vw, 270px);
+  text-align:center;
+  transition: opacity .4s ease, transform .4s ease;
+}
+.envelope-scene.closing{
+  opacity:0;
+  transform: scale(0.6);
+  pointer-events:none;
+}
+
+.envelope{
+  position:relative;
+  width:100%;
+  height: 165px;
+  background: var(--gerbera-pink);
+  border: var(--border-thick);
+  border-radius: 16px;
+  box-shadow: var(--shadow-block);
+  cursor:pointer;
+}
+
+.envelope-letter-peek{
+  position:absolute;
+  left:12px; right:12px; bottom:10px;
+  height:120px;
+  background: var(--white);
+  border: var(--border-thick);
+  border-radius: 10px;
+  padding: 12px;
+  z-index:2;
+  transition: transform .6s var(--bounce-elastic);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.envelope-letter-peek span{
+  height: 7px;
+  background: var(--bg-pink);
+  border-radius: 4px;
+}
+
+.envelope-pocket{
+  position:absolute;
+  inset:0;
+  border-radius: 12px;
+  z-index:3;
+  pointer-events:none;
+  clip-path: polygon(0% 42%, 50% 74%, 100% 42%, 100% 100%, 0% 100%);
+  background: var(--gerbera-red);
+  border-top: var(--border-thick);
+}
+
+.envelope-flap-top{
+  position:absolute;
+  left:-3px; right:-3px; top:-3px;
+  height: 90px;
+  background: var(--gerbera-orange);
+  border: var(--border-thick);
+  border-radius: 14px 14px 0 0;
+  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+  transform-origin: top center;
+  z-index:4;
+  transition: transform .5s var(--bounce-elastic);
+}
+.envelope-flap-top::after{
+  content:"🌼";
+  position:absolute;
+  left:50%; top:28%;
+  transform: translate(-50%,-50%);
+  font-size: 1rem;
+}
+
+.envelope.opened .envelope-flap-top{
+  transform: rotateX(180deg);
+  z-index:1;
+}
+.envelope.opened .envelope-letter-peek{
+  transform: translateY(-100px) scale(1.04) rotate(-2deg);
+  z-index:5;
+}
+
+/* =========================================================
+   5. KARTU POP-UP KARTUN
+========================================================= */
+.card-revealed{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  opacity:0;
+  pointer-events:none;
+  transform: scale(0.5) rotate(-4deg);
+  transition: opacity .4s ease, transform .5s var(--bounce-elastic);
+}
+.card-revealed.show{
+  opacity:1;
+  pointer-events:auto;
+  transform: scale(1) rotate(0deg);
+}
+
+.cartoon-card{
+  width:100%;
+  background: var(--white);
+  border: var(--border-thick);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-block);
+  padding: clamp(16px, 4.5vw, 22px);
+  position:relative;
+}
+.card-tag{
+  position:absolute;
+  top:-13px; left:16px;
+  background: var(--gerbera-yellow);
+  color: var(--text-dark);
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  padding: 3px 10px;
+  border-radius: 10px;
+  border: var(--border-thick);
+  box-shadow: var(--shadow-block-sm);
+}
+.card-kop{
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--gerbera-red);
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+.card-body{
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+.card-sign{
+  display:block;
+  margin-top:8px;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  color: var(--gerbera-orange);
+  text-align:right;
+}
+
+/* =========================================================
+   6. HALAMAN 2 — PROFIL
+========================================================= */
+.profile-card{
+  width:100%;
+  background: var(--white);
+  border: var(--border-thick);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-block);
+  padding: clamp(16px, 4.5vw, 22px);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.profile-top{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.profile-photo-wrap{
+  width: 75px; height: 75px;
+  border-radius: 50%;
+  border: var(--border-thick);
+  background: var(--gerbera-pink);
+  overflow:hidden;
+  flex-shrink:0;
+}
+.profile-photo{
+  width:100%; height:100%;
+  object-fit:cover;
+}
+.badge-wrap{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:4px;
+}
+.badge{
+  background: var(--gerbera-yellow);
+  border: 2px solid var(--stroke-dark);
+  padding: 2px 7px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+/* =========================================================
+   7. HALAMAN 3 — KOTAK KADO & INTERAKSI TOMBOL
+========================================================= */
+.giftbox-scene{
+  position:relative;
+  width: 200px;
+  text-align:center;
+  transition: opacity .4s ease, transform .4s ease;
+}
+.giftbox-scene.closing{
+  opacity:0;
+  transform: scale(0.6);
+  pointer-events:none;
+}
+
+.giftbox{
+  position:relative;
+  width: 155px;
+  height: 130px;
+  margin: 0 auto;
+  cursor:pointer;
+}
+.gift-body{
+  position:absolute;
+  bottom:0; width:100%; height: 100px;
+  background: var(--gerbera-pink);
+  border: var(--border-thick);
+  border-radius: 0 0 16px 16px;
+  box-shadow: var(--shadow-block);
+}
+.gift-body::after{
+  content:'';
+  position:absolute;
+  left:50%; transform:translateX(-50%);
+  width:24px; height:100%;
+  background: var(--gerbera-yellow);
+  border-left: var(--border-thick);
+  border-right: var(--border-thick);
+}
+.gift-lid{
+  position:absolute;
+  top: 16px; left: -8px;
+  width: 171px; height: 30px;
+  background: var(--gerbera-red);
+  border: var(--border-thick);
+  border-radius: 10px;
+  box-shadow: var(--shadow-block-sm);
+  z-index:4;
+  transition: transform .5s var(--bounce-elastic);
+}
+.gift-lid::after{
+  content:'';
+  position:absolute;
+  left:50%; transform:translateX(-50%);
+  width:24px; height:100%;
+  background: var(--gerbera-yellow);
+  border-left: var(--border-thick);
+  border-right: var(--border-thick);
+}
+.gift-bow{
+  position:absolute;
+  top: -22px; left:50%;
+  transform:translateX(-50%);
+  font-size: 2rem;
+  z-index:5;
+  transition: transform .5s var(--bounce-elastic);
+}
+
+.giftbox.opened .gift-lid{
+  transform: translateY(-60px) rotate(-16deg);
+}
+.giftbox.opened .gift-bow{
+  transform: translateX(-50%) translateY(-70px) rotate(-25deg);
+}
+
+/* Wadah Tombol Iya & Tidak */
+.choice-buttons-wrap{
+  position:relative;
+  width:100%;
+  height: 120px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  opacity:0;
+  pointer-events:none;
+}
+.choice-buttons-wrap.show{ opacity:1; pointer-events:auto; }
+
+#yesBtn{
+  background: var(--gerbera-red);
+  color: var(--white);
+  z-index:10;
+  position:relative;
+  transition: transform .3s var(--bounce-elastic);
+}
+#noBtn{
+  background: var(--white);
+  color: var(--text-dark);
+  z-index:5;
+  position:relative;
+  transition: left .25s ease, top .25s ease, opacity .4s ease, transform .4s ease;
+}
+
+/* =========================================================
+   8. HALAMAN 4 — PERAYAAN
+========================================================= */
+.celebration-box{
+  position:relative;
+  z-index:6;
+  text-align:center;
+  width:100%;
+  background: var(--white);
+  border: var(--border-thick);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-block);
+  padding: 24px 18px;
+}
+.celebration-box h1{
+  font-size: 1.65rem;
+  color: var(--gerbera-red);
+  margin-bottom:8px;
+}
+
+/* =========================================================
+   9. BACKGROUND ASSETS: MELAYANG & JATUH
+========================================================= */
+#globalFloatingContainer, #fallingContainer{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+#globalFloatingContainer{ z-index:1; }
+#fallingContainer{ z-index:2; }
+
+.falling-item{
+  position:absolute;
+  top:-60px;
+  will-change: transform;
+  animation: fall-animation linear forwards;
+}
+.falling-item img{ width:100%; height:100%; object-fit:contain; }
+
+@keyframes fall-animation{
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translate(var(--drift-x, 30px), 110vh) rotate(var(--rot-end, 360deg)); opacity: 0; }
+}
+
+.floating-item{
+  position:absolute;
+  bottom:-60px;
+  will-change: transform;
+  animation: float-up-animation linear forwards;
+}
+.floating-item img{ width:100%; height:100%; object-fit:contain; }
+
+@keyframes float-up-animation{
+  0%   { transform: translate(0, 0) scale(0.8); opacity: 0; }
+  15%  { opacity: 1; transform: translate(var(--drift-x-float, -15px), -15vh) scale(1); }
+  85%  { opacity: 1; }
+  100% { transform: translate(var(--drift-x-float, 30px), -115vh) scale(1.05); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- WADAH OBJEK MELAYANG (SEMUA HALAMAN 1 - 4) -->
+<div id="globalFloatingContainer"></div>
+
+<!-- WADAH BUNGA BERJATUHAN (HALAMAN 4) -->
+<div id="fallingContainer"></div>
+
+<div class="progress-dots" id="progressDots">
+  <span class="active"></span><span></span><span></span><span></span>
+</div>
+
+<div id="app">
+
+  <!-- ==================== HALAMAN 1 (AMPLOP) ==================== -->
+  <section class="page active" id="page1">
+    <div class="stage-container">
+      
+      <div class="envelope-scene" id="envelopeScene1">
+        <div class="envelope" id="envelope1">
+          <div class="envelope-letter-peek">
+            <span></span><span style="width:65%;"></span>
+          </div>
+          <div class="envelope-pocket"></div>
+          <div class="envelope-flap-top"></div>
+        </div>
+        <div class="hint-badge" id="hint1">👉 TEKEN COBAK</div>
+      </div>
+
+      <div class="card-revealed" id="cardRevealed1">
+        <div class="cartoon-card">
+          <div class="card-tag">WOIIIIIII</div>
+          <p class="card-kop">HALOOOOOK</p>
+          
+          <div class="scrollable-content" id="scrollLetter1">
+            <p class="card-body">Anu jadi aku sebenarnya udh lama mau ngomongnya tuh, cuma akutu supershy banget kalo ngomong langsung jadi aku buatin kayak gini aja ya, semoga ga mengecewakan.
+
+JANGAN BACA KERAS KERAS MALUU GWEH 😭😭
+</p>
+          </div>
+          <div class="scroll-notice" id="notice1">👇 Scroll sampek habis 😊</div>
+          <span class="card-sign">ndijek 😈😈</span>
+        </div>
+        <button class="btn btn-primary btn-locked btn-hidden" id="toPage2">Lanjut Dong 🚀</button>
+      </div>
+
+    </div>
+  </section>
+
+ <!-- ==================== HALAMAN 2 (KENAPA AKU SUKA KAMU) ==================== -->
+<section class="page" id="page2">
+
+  <div class="cartoon-card">
+
+    <div class="card-tag">
+      Anu sebelum lanjut baca cobak (Buat nambah" halaman ajasih)
+    </div>
+
+    <p class="card-kop">
+      anu 🌸
+    </p>
+
+    <div class="scrollable-content" id="scrollBio">
+
+      <p class="card-body">
+kok gweh bisa sukak 😊😊😊?
+Jadi sebenarnya tu aku ga tau pasti kapan, cuma kayak tiba" aja gitu aku sering reply chat mu, sering ngajak kamu ngobrol, eh lama" kita main game bareng, nonton bareng, terus aku mulai pasti itu waktu kita first date kayak "kok sama kamutuh seru deh" dari situ ak mulai kayak gitu deh ansndjbsaubsdfhbadh bingung ngetik apa gue nih, pokoknya gitu 
+<br><br>
+
+<p class="card-kop">
+Kok tiba" di sini nembaknya n kenapa ketunda terus? 💖
+</p>
+kenapa tiba" soalnya.... (tanya nanti aja abis itu), kalo kenapa ketunda terus gara" ak masih ngumpulin keberanian n niatnya waktu ultahmu, cuma ya gitu dehh nanti aja nanya kenapa tiba" hari ini.
+<br><br>
+
+Anu jadi gitu deh, lanjut aja ahh mauk gweh ahudbiaysbdkhbaskhdgbhj.
+
+      </p>
+
+    </div>
+
+    <div class="scroll-notice" id="noticeBio">
+      skroll sampe habis woi
+    </div>
+
+  </div>
+
+
+  <button class="btn btn-primary btn-locked" id="toPage3">
+    LAMJUT WOI 🎁
+  </button>
+
+</section>
+</p>
+
+  <!-- ==================== HALAMAN 3 (KOTAK KADO & PILIHAN) ==================== -->
+  <section class="page" id="page3">
+    <div class="stage-container">
+      
+      <div class="giftbox-scene" id="giftScene">
+        <div class="giftbox" id="giftBox">
+          <div class="gift-bow">🎀</div>
+          <div class="gift-lid"></div>
+          <div class="gift-body"></div>
+        </div>
+        <div class="hint-badge" id="hint2">TEKEN COBAK 🎁</div>
+      </div>
+
+      <div class="card-revealed" id="cardRevealed2">
+        <div class="cartoon-card">
+          <div class="card-tag">Anu gitu deh</div>
+          <p class="card-kop">pokoknya gitu</p>
+          
+          <div class="scrollable-content" id="scrollLetter2">
+            <p class="card-body">
+              Langsung ke intinya aja sih, kamu mau ngak kira"? awjidnsdnjsabduhas 
+            </p>
+          </div>
+          <span class="card-sign">ndi jek</span>
+        </div>
+
+        <div class="choice-buttons-wrap" id="choiceWrap">
+          <button class="btn btn-primary" id="yesBtn">Mw</button>
+          <button class="btn btn-ghost" id="noBtn">gak</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== HALAMAN 4 (PERAYAAN) ==================== -->
+  <section class="page" id="page4">
+    <div class="celebration-box">
+      <h1>YEEEY! Tengkyuuu 🥳🎉</h1>
+      <p class="card-body" style="margin-top:10px;">Kemungkinan orangnya sudah malu mampus, cobak tegur abis jawab, btw makasih yak</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   ASSET GAMBAR (SILAKAN MASUKKAN DARI GALERI)
+========================================================= */
+
+// 1. Objek Melayang (LUCUU.png)
+const FLOATING_OBJECT_IMAGES = [
+  "PHOTO/LUCUU.png"
+];
+
+// 2. Bunga Gerbera Berjatuhan (GERBERAS.png)
+const GERBERA_FALLING_IMAGES = [
+  "PHOTO/GERBERAS.png"
+];
+
+/* =========================================================
+   1. SISTEM SCROLL UNLOCK (WAJIB SCROLL SEBELUM NEXT)
+========================================================= */
+function setupScrollUnlock(scrollAreaId, buttonId, noticeId) {
+  const scrollArea = document.getElementById(scrollAreaId);
+  const btn = document.getElementById(buttonId);
+  const notice = document.getElementById(noticeId);
+  let isUnlocked = false;
+
+  function unlock() {
+    if (isUnlocked) return;
+    isUnlocked = true;
+    btn.classList.remove("btn-locked");
+    if (notice) {
+      notice.style.opacity = '0';
+      setTimeout(() => { notice.style.display = 'none'; }, 300);
+    }
+  }
+
+  function checkScroll() {
+    // Jika konten pendek dan tidak membutuhkan scroll, langsung unlock
+    if (scrollArea.scrollHeight <= scrollArea.clientHeight + 10) {
+      unlock();
+      return;
+    }
+    // Cek apakah scroll sudah mencapai bagian paling bawah (toleransi 15px)
+    if (scrollArea.scrollTop + scrollArea.clientHeight >= scrollArea.scrollHeight - 15) {
+      unlock();
+    }
+  }
+
+  scrollArea.addEventListener("scroll", checkScroll);
+  // Cek inisial saat halaman dimuat/tampil
+  setTimeout(checkScroll, 400);
+}
+
+/* =========================================================
+   2. GENERATOR OBJEK MELAYANG (GLOBAL)
+========================================================= */
+function spawnFloatingItem(){
+  const container = document.getElementById("globalFloatingContainer");
+  const item = document.createElement("div");
+  item.className = "floating-item";
+
+  const size = 26 + Math.random() * 20;
+  const startX = Math.random() * 95;
+  const duration = 5.5 + Math.random() * 3.5;
+  const driftXFloat = (Math.random() * 60 - 30);
+
+  item.style.left = startX + "vw";
+  item.style.width = size + "px";
+  item.style.height = size + "px";
+  item.style.animationDuration = duration + "s";
+  item.style.setProperty("--drift-x-float", driftXFloat + "px");
+
+  const img = document.createElement("img");
+  const validList = FLOATING_OBJECT_IMAGES.filter(src => src && src.trim() !== "");
+  
+  if(validList.length > 0){
+    img.src = validList[Math.floor(Math.random() * validList.length)];
+  } else {
+    img.style.background = "#FF6584";
+    img.style.border = "2px solid #2B1B22";
+    img.style.borderRadius = "50%";
+    img.style.width = "100%";
+    img.style.height = "100%";
+  }
+
+  item.appendChild(img);
+  container.appendChild(item);
+  item.addEventListener("animationend", () => item.remove());
+}
+setInterval(spawnFloatingItem, 750);
+
+/* =========================================================
+   3. GENERATOR BUNGA BERJATUHAN (HALAMAN 4)
+========================================================= */
+let fallingActive = false;
+
+function spawnFallingItem(){
+  const container = document.getElementById("fallingContainer");
+  const item = document.createElement("div");
+  item.className = "falling-item";
+
+  const size = 24 + Math.random() * 18;
+  const startX = Math.random() * 100;
+  const duration = 4 + Math.random() * 3.5;
+  const driftX = (Math.random() * 80 - 40);
+  const rotation = Math.random() * 360;
+
+  item.style.left = startX + "vw";
+  item.style.width = size + "px";
+  item.style.height = size + "px";
+  item.style.animationDuration = duration + "s";
+  item.style.setProperty("--drift-x", driftX + "px");
+  item.style.setProperty("--rot-end", rotation + "deg");
+
+  const img = document.createElement("img");
+  const validList = GERBERA_FALLING_IMAGES.filter(src => src && src.trim() !== "");
+  
+  if(validList.length > 0){
+    img.src = validList[Math.floor(Math.random() * validList.length)];
+  } else {
+    img.style.background = "#FF7A00";
+    img.style.border = "2px solid #2B1B22";
+    img.style.borderRadius = "50% 0 50% 0";
+    img.style.width = "100%";
+    img.style.height = "100%";
+  }
+  
+  item.appendChild(img);
+  container.appendChild(item);
+  item.addEventListener("animationend", () => item.remove());
+}
+
+function startFallingEffects(){
+  if(fallingActive) return;
+  fallingActive = true;
+  setInterval(spawnFallingItem, 300);
+}
+
+/* =========================================================
+   4. SISTEM NAVIGASI HALAMAN
+========================================================= */
+const pages = ["page1", "page2", "page3", "page4"];
+const dots = document.querySelectorAll("#progressDots span");
+
+function goToPage(pageId){
+  const current = document.querySelector(".page.active");
+  const target = document.getElementById(pageId);
+  if(!target || current === target) return;
+
+  current.classList.remove("active");
+  current.classList.add("leaving");
+  setTimeout(() => {
+    current.classList.remove("leaving");
+    current.style.display = "none";
+  }, 400);
+
+  target.style.display = "flex";
+  void target.offsetWidth;
+  requestAnimationFrame(() => target.classList.add("active"));
+
+  const idx = pages.indexOf(pageId);
+  dots.forEach((d, i) => d.classList.toggle("active", i === idx));
+
+  // Inisialisasi ulang cek scroll saat berpindah halaman
+  if (pageId === "page2") {
+    setupScrollUnlock("scrollBio", "toPage3", "noticeBio");
+  }
+}
+
+/* =========================================================
+   5. INTERAKSI AMPLOP & KOTAK KADO
+========================================================= */
+// Halaman 1
+const envelope1 = document.getElementById("envelope1");
+const envScene1 = document.getElementById("envelopeScene1");
+const cardRev1  = document.getElementById("cardRevealed1");
+const toPage2Btn = document.getElementById("toPage2");
+
+envelope1.addEventListener("click", () => {
+  envelope1.classList.add("opened");
+  document.getElementById("hint1").style.opacity = '0';
+  
+  setTimeout(() => envScene1.classList.add("closing"), 450);
+  setTimeout(() => {
+    cardRev1.classList.add("show");
+    toPage2Btn.classList.remove("btn-hidden");
+    toPage2Btn.classList.add("btn-shown");
+    setupScrollUnlock("scrollLetter1", "toPage2", "notice1");
+  }, 650);
+});
+
+toPage2Btn.addEventListener("click", () => {
+  if (toPage2Btn.classList.contains("btn-locked")) return;
+  goToPage("page2");
+});
+
+document.getElementById("toPage3").addEventListener("click", (e) => {
+  if (e.currentTarget.classList.contains("btn-locked")) return;
+  goToPage("page3");
+});
+
+// Halaman 3
+const giftBox = document.getElementById("giftBox");
+const giftScene = document.getElementById("giftScene");
+const cardRev2  = document.getElementById("cardRevealed2");
+const choiceWrap = document.getElementById("choiceWrap");
+
+giftBox.addEventListener("click", () => {
+  giftBox.classList.add("opened");
+  document.getElementById("hint2").style.opacity = '0';
+
+  setTimeout(() => giftScene.classList.add("closing"), 450);
+  setTimeout(() => {
+    cardRev2.classList.add("show");
+    choiceWrap.classList.add("show");
+  }, 650);
+});
+
+/* =========================================================
+   6. LOGIKA TOMBOL TIDAK (DIPERPANJANG HINGGA TERTUTUP TOMBOL IYA)
+========================================================= */
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+let dodgeCount = 0;
+const MAX_DODGE = 10; // Jumlah klik diperpanjang (10x percobaan)
+
+function dodgeNoButton(e){
+  if(e) e.preventDefault();
+  dodgeCount++;
+  
+  const wrapRect = choiceWrap.getBoundingClientRect();
+  const btnRect  = noBtn.getBoundingClientRect();
+
+  if(noBtn.style.position !== "absolute"){
+    noBtn.style.position = "absolute";
+  }
+
+  const maxLeft = Math.max(wrapRect.width  - btnRect.width, 0);
+  const maxTop  = Math.max(wrapRect.height - btnRect.height, 0);
+
+  noBtn.style.left = (Math.random() * maxLeft) + "px";
+  noBtn.style.top  = (Math.random() * maxTop) + "px";
+
+  // Tombol "Iya" membesar bertahap hingga menutupi area tombol tidak
+  const scaleValue = 1 + (dodgeCount * 0.14);
+  yesBtn.style.transform = `scale(${scaleValue})`;
+
+  // Di tahap akhir, tombol Tidak menghilang di balik tombol Iya
+  if(dodgeCount >= MAX_DODGE){
+    noBtn.style.opacity = "0";
+    noBtn.style.transform = "scale(0.2)";
+    setTimeout(() => { noBtn.style.display = "none"; }, 400);
+  }
+}
+
+// Hanya aktif saat diklik atau disentuh di layar HP
+noBtn.addEventListener("click", dodgeNoButton);
+noBtn.addEventListener("touchstart", dodgeNoButton, { passive: false });
+
+yesBtn.addEventListener("click", () => {
+  goToPage("page4");
+  startFallingEffects();
+});
+</script>
+</body>
+</html>
